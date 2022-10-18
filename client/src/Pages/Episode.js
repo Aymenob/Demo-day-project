@@ -4,12 +4,15 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { logOUT } from '../Redux/usersSlice'
 import {  getTrailers2, getEpisode, modifyEpisode, deleteEpisode,searchTrailer,random } from '../Redux/animeSlice'
+import { getTrailerComments } from '../Redux/commentsSlice'
 import { useEffect } from 'react'
 import NewAnimes from '../animeComponents/newAnimes'
 import Video from '../animeComponents/video'
 import Swal from 'sweetalert2'
 import HomeDropDown from '../animeComponents/HomeDropDown'
 import GenreDropDown from '../animeComponents/genreDropDown'
+import Comments from '../animeComponents/Comments'
+import PostedComments from '../animeComponents/postedComments'
 const Episode = () => {
   
   let { number, season, animeName } = useParams();
@@ -29,12 +32,18 @@ const Episode = () => {
   data.append('episodes', JSON.stringify(oldUrl)); 
   data.append('newEpisodes', JSON.stringify(url));
   useEffect(() => {
-
+ 
     authorized ? navigate() : navigate("/")
     dispatch(getTrailers2())
     dispatch(getEpisode({ season: season, animeName: animeName })).then(result => result.payload.episodes?.map(e => JSON.parse(e).number == number ? setOldUrl({ ...oldUrl, number: number, url: JSON.parse(e).url }) : null)
     );
+   
   }, [number])
+  useEffect(() => {
+    dispatch(getTrailerComments({TrailerId:Id,number:number}))
+    
+  }, [Id])
+  
 
   return (
     <div class="homeBackground">
@@ -72,8 +81,15 @@ const Episode = () => {
                 </div>
                 if you can't watch the video please try to reload page
               </div>
+              <section class="postingComment">
+              <Comments/>
+              </section>
               <div class="episodeComments">
-                
+             
+              <PostedComments/>
+              <PostedComments/>
+              <PostedComments/>
+          
               </div>
             </div>
 
@@ -86,7 +102,6 @@ const Episode = () => {
             </div>
           </div>
         </section>
-
       </div>
     </div>
   )

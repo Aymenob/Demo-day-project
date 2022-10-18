@@ -387,9 +387,21 @@ margin-left:2cm;
    }
   
    .episodeComments{
-    border:   2px ;
-    width: 100%;height:10.6cm;
-   }
+    
+    border:  red  2px ;
+    width: 100%;height:7cm;
+    display: grid;
+    justify-items: center ;
+    overflow-y:scroll;overflow-x:hidden
+    ;
+  }
+  .postingComment{
+    margin-top: 0.2cm;
+    border:  red ;
+    width: 100%;display: flex;
+    justify-items: center;justify-content: center;
+
+  }
    .episodeVideo{margin-top: 1cm;
     border:  2px ;
     width: 100%;display:grid;
@@ -576,3 +588,30 @@ html {
     .Sign-up button{border:none;color:white;
       height: 1cm;border-radius: 8px;width: 3cm;background-color: rgb(236, 73, 55);
     }
+    .card {
+      background-color: #fff;
+      border: none
+  }
+  
+  .form-color {
+      background-color: #fafafa
+  }
+  
+  .form-control {
+      height: 48px;
+      border-radius: 25px
+  }
+  
+  .form-control:focus {
+      color: #495057;
+      background-color: #fff;
+      border-color: #35b69f;
+      outline: 0;
+      box-shadow: none;
+      text-indent: 10px;
+  }
+  
+  .c-badge {
+      background-color: #35b69f;
+      color: white;}
+      body{background: #eee}.date{font-size: 11px}.comment-text{font-size: 12px}.fs-12{font-size: 12px}.shadow-none{box-shadow: none}.name{color: #007bff}.cursor:hover{color: blue}.cursor{cursor: pointer}.textarea{resize: none}

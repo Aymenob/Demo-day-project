@@ -33,7 +33,7 @@ const getComments = async function (req, res) {
 //------------------------------delete a comment
 const getTrailerComments = async function (req, res) {
    try {
-       const {id,number} = req.params;
+       const {id,number} = req.params;console.log( req.params)
        const comments = await Comment.find({TrailerId: id}).lean().populate({path:"Owner",select:"-Password -__v"}).find({episodes:number})
               return res.status(200).json(comments)
    } catch (err) { return res.status(500).json({ msg: err }) }

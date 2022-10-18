@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-const NewAnimes = ({animeName,animePicture,season,url,Id,Rate}) => {
+const NewAnimes = ({animeName,animePicture,season,Rate}) => {
     const Navigate=useNavigate()
     
     return (

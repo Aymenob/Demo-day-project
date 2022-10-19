@@ -4,8 +4,8 @@ const { validationResult } = require('express-validator');
 //------------------------------posting a comment
 const postComment = async function (req, res) {
    
-    const {text,episodes,Owner}=req.body;console.log(text)
-    const {id}=req.params;console.log(id)
+    const {text,episodes,Owner}=req.body;
+    const {id}=req.params;
    try {
       const addComment=await new Comment({episodes:episodes,text:text,TrailerId:id,Owner:Owner})
       const newComment=await addComment.save()
@@ -17,7 +17,7 @@ const postComment = async function (req, res) {
 }
 //------------------------------delete a comment
 const deleteComment = async function (req, res) {
-   const commentId = req.params.id
+   const commentId = req.params.id;console.log(commentId)
    
    try {
        const comment = await Comment.findOneAndDelete({ _id: commentId })

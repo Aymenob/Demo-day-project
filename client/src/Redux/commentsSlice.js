@@ -15,12 +15,19 @@ export const postComment=createAsyncThunk("comments/postComment",async function 
     return data
   } catch (err) {return rejectWithValue(err.response.data.msg) }
 })
+export const deleteComment=createAsyncThunk("comments/deleteComment",async function (TrailerId,{rejectWithValue}) {
+  try { 
+    const {data}=axios.delete("/deleteComment"+TrailerId)
+    return data
+  } catch (err) {return rejectWithValue(err.response.data.msg) }
+})
 const initialState={
  loading:true,
   errors:null,
   commentErreurs:null,
   Comments:[],
-  newComment:null
+  newComment:null,
+  deletedComment:null
   }
 
   export const commentSlice = createSlice({
@@ -50,7 +57,18 @@ const initialState={
     state.errors=payload
     state.loading=false
     
-  }
+  },
+  [deleteComment.pending]:(state)=>{ state.loading=true},
+  [deleteComment.fulfilled]:(state,{payload})=>{
+   state.deletedComment=payload
+   state.loading=false
+   
+ },
+  [deleteComment.rejected]:(state,{payload})=>{
+   state.errors=payload
+   state.loading=false
+   
+ }
   }
 })
 

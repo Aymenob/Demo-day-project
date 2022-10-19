@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { logOUT } from '../Redux/usersSlice'
 import {  getTrailers2, getEpisode, modifyEpisode, deleteEpisode,searchTrailer,random } from '../Redux/animeSlice'
-import { getTrailerComments,postComment } from '../Redux/commentsSlice'
+import { getTrailerComments,postComment,deleteComment } from '../Redux/commentsSlice'
 import { useEffect } from 'react'
 import NewAnimes from '../animeComponents/newAnimes'
 import Video from '../animeComponents/video'
@@ -34,6 +34,7 @@ const Episode = () => {
   const handleType=(e)=>{settypedComment(e.target.value)};
   const handleSubmit=()=>{dispatch(postComment({TrailerId:Id,episodes:number,Owner:user._id,text:typedComment})).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number})))}//text,episodes,Owner,TrailerId
   const handleCancel=()=>{settypedComment("")}
+  const handleDelete=(e)=>{dispatch(deleteComment(e._id)).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number})))}
   useEffect(() => {
     Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
     authorized ? navigate() : navigate("/")
@@ -88,7 +89,7 @@ const Episode = () => {
               </section>
               <div class="episodeComments">
              
-              {EpComments.map(e=><PostedComments updatedAt={e.updatedAt} owner={e.Owner.userName} text={e.text} url={e.Owner.Image.path}/>)}
+              {EpComments.map(e=><PostedComments OwnerId={e.Owner._id}  handleDelete={()=>handleDelete(e)} updatedAt={e.updatedAt} owner={e.Owner.userName} text={e.text} url={e.Owner.Image.path}/>)}
              
           
               </div>

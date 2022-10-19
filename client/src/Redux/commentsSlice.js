@@ -2,21 +2,25 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from "axios"
 //........trailers are sorted by UpdateDate and limited at 12
 export const getTrailerComments=createAsyncThunk("comments/getTrailerComments",async function (commentINF,{rejectWithValue}) {
-    try {
-        console.log(commentINF)
+    try {  
     const {data}=await axios.get("/getTrailerComments/"+commentINF.TrailerId+"/"+commentINF.number)
-    console.log(data[0])
     return data
     } catch (err) {
         return rejectWithValue(err.response.data.msg)
     }
 })
-
+export const postComment=createAsyncThunk("comments/postComment",async function (commentINF,{rejectWithValue}) {
+  try { console.log(commentINF)
+    const {data}=axios.post("/postComment"+commentINF.TrailerId,commentINF)
+    return data
+  } catch (err) {return rejectWithValue(err.response.data.msg) }
+})
 const initialState={
  loading:true,
   errors:null,
   commentErreurs:null,
   Comments:[],
+  newComment:null
   }
 
   export const commentSlice = createSlice({
@@ -35,7 +39,18 @@ const initialState={
      state.errors=payload
      state.loading=false
      
-   }
+   },
+   [postComment.pending]:(state)=>{ state.loading=true},
+   [postComment.fulfilled]:(state,{payload})=>{
+     state.newComment=payload
+    state.loading=false
+    
+  },
+   [postComment.rejected]:(state,{payload})=>{
+    state.errors=payload
+    state.loading=false
+    
+  }
   }
 })
 

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { logOUT } from '../Redux/usersSlice'
 import {  getTrailers2, getEpisode, modifyEpisode, deleteEpisode,searchTrailer,random } from '../Redux/animeSlice'
-import { getTrailerComments } from '../Redux/commentsSlice'
+import { getTrailerComments,postComment } from '../Redux/commentsSlice'
 import { useEffect } from 'react'
 import NewAnimes from '../animeComponents/newAnimes'
 import Video from '../animeComponents/video'
@@ -22,17 +22,20 @@ const Episode = () => {
   const trailers2 = useSelector(state => state.animes.trailers2);
   const Episodes = useSelector(state => state.animes?.clickedEpisode?.episodes)
   const Id = useSelector(state => state.animes?.clickedEpisode?._id);
-
-
-  const dispatch = useDispatch()
+  const EpComments=useSelector(state=>state.Comments.Comments)
+   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [oldUrl, setOldUrl] = useState({ number: number }); 
   const [url, seturl] = useState(null)
+  const [typedComment, settypedComment] = useState("")
   const data = new FormData();
   data.append('episodes', JSON.stringify(oldUrl)); 
   data.append('newEpisodes', JSON.stringify(url));
+  const handleType=(e)=>{settypedComment(e.target.value)};
+  const handleSubmit=()=>{dispatch(postComment({TrailerId:Id,episodes:number,Owner:user._id,text:typedComment})).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number})))}//text,episodes,Owner,TrailerId
+  const handleCancel=()=>{settypedComment("")}
   useEffect(() => {
- 
+    Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
     authorized ? navigate() : navigate("/")
     dispatch(getTrailers2())
     dispatch(getEpisode({ season: season, animeName: animeName })).then(result => result.payload.episodes?.map(e => JSON.parse(e).number == number ? setOldUrl({ ...oldUrl, number: number, url: JSON.parse(e).url }) : null)
@@ -40,9 +43,8 @@ const Episode = () => {
    
   }, [number])
   useEffect(() => {
-    dispatch(getTrailerComments({TrailerId:Id,number:number}))
-    
-  }, [Id])
+    Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
+    }, [Id,number])
   
 
   return (
@@ -82,13 +84,12 @@ const Episode = () => {
                 if you can't watch the video please try to reload page
               </div>
               <section class="postingComment">
-              <Comments/>
+              <Comments value={typedComment} handleCancel={handleCancel} handleSubmit={handleSubmit} handleType={handleType} url={user.Image.path}/>
               </section>
               <div class="episodeComments">
              
-              <PostedComments/>
-              <PostedComments/>
-              <PostedComments/>
+              {EpComments.map(e=><PostedComments updatedAt={e.updatedAt} owner={e.Owner.userName} text={e.text} url={e.Owner.Image.path}/>)}
+             
           
               </div>
             </div>

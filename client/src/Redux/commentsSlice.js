@@ -21,13 +21,20 @@ export const deleteComment=createAsyncThunk("comments/deleteComment",async funct
     return data
   } catch (err) {return rejectWithValue(err.response.data.msg) }
 })
+export const modifyComment=createAsyncThunk("comments/modifyComment",async function (CommentINF,{rejectWithValue}) {
+  try { console.log(CommentINF)
+    const {data}=axios.put("/modifyComment"+CommentINF.id,CommentINF)
+    return data
+  } catch (err) {return rejectWithValue(err.response.data.msg) }
+})
 const initialState={
  loading:true,
   errors:null,
   commentErreurs:null,
   Comments:[],
   newComment:null,
-  deletedComment:null
+  deletedComment:null,
+  modifiedComment:null
   }
 
   export const commentSlice = createSlice({
@@ -65,6 +72,17 @@ const initialState={
    
  },
   [deleteComment.rejected]:(state,{payload})=>{
+   state.errors=payload
+   state.loading=false
+   
+ },
+  [modifyComment.pending]:(state)=>{ state.loading=true},
+  [modifyComment.fulfilled]:(state,{payload})=>{
+   state.modifiedComment=payload
+   state.loading=false
+   
+ },
+  [modifyComment.rejected]:(state,{payload})=>{
    state.errors=payload
    state.loading=false
    

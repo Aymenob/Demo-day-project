@@ -39,6 +39,16 @@ const getTrailerComments = async function (req, res) {
               return res.status(200).json(comments)
    } catch (err) { return res.status(500).json({ msg: err }) }
 }
+//------------------------------delete a comment
+const modifyComment=async function (req,res) {
+   const id=req.params.id;console.log(req.body)
+   const {text}=req.body
+   try {
+      const modifiedComment=await Comment.findByIdAndUpdate(id,{text:text})
+      return res.status(200).json(modifiedComment)
+   } catch (err) {return res.status(500).json({mgs:err})
+      
+   }
+}
 
-
-module.exports = { postComment,deleteComment,getComments,getTrailerComments }
+module.exports = { postComment,deleteComment,getComments,getTrailerComments,modifyComment }

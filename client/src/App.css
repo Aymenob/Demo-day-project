@@ -208,9 +208,9 @@ margin-left:2cm;
   }
  
   .firstSection{
-    margin-left:0.4cm; overflow: hidden;
+    margin-left:0.4cm; 
     margin-top: 0.1cm;
-  border: ;
+  border:  blue ;
   min-height:23.7cm;max-height:23.7cm;
   display:grid;
   grid-template-columns: 20cm 7.8cm;
@@ -371,7 +371,7 @@ margin-left:2cm;
   .home{
     position: ;
     z-index:10;
-    min-width:29cm;min-height:100%;max-height:110%;max-width:29cm;
+    min-width:29cm;min-height:29.8cm;max-height:110%;max-width:29cm;
     background-color: white;border:black solid 4px;border-radius: 5px;
     left:200px;
   
@@ -387,12 +387,15 @@ margin-left:2cm;
    }
   
    .episodeComments{
-    
+    z-index: 15;
     border:  red  2px ;
-    width: 95%;height:7.52cm;
+    width: 95%;height:11.2cm;
     display: grid;
     justify-items: center ;
     overflow-y:auto;overflow-x:hidden
+    ;justify-items: center;justify-content: ;
+    grid-template-rows: 1fr 1fr 1fr 1fr
+     
     ;
   }
   .episodeComments::-webkit-scrollbar {
@@ -412,7 +415,7 @@ margin-left:2cm;
   }
   .postingComment{
     margin-top: 0.2cm;
-    border:  red ;
+    border:   red ;
     width: 100%;display: flex;
     justify-items: center;justify-content: center;
 

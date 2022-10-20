@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { logOUT } from '../Redux/usersSlice'
 import {  getTrailers2, getEpisode, modifyEpisode, deleteEpisode,searchTrailer,random } from '../Redux/animeSlice'
-import { getTrailerComments,postComment,deleteComment } from '../Redux/commentsSlice'
+import { getTrailerComments,postComment,deleteComment,modifyComment } from '../Redux/commentsSlice'
 import { useEffect } from 'react'
 import NewAnimes from '../animeComponents/newAnimes'
 import Video from '../animeComponents/video'
@@ -27,14 +27,20 @@ const Episode = () => {
   const navigate = useNavigate()
   const [oldUrl, setOldUrl] = useState({ number: number }); 
   const [url, seturl] = useState(null)
-  const [typedComment, settypedComment] = useState("")
+  const [typedComment, settypedComment] = useState("");
+  const [typedNewComment, settypedNewComment] = useState("")
+  const [show,setShow]=useState(false)
   const data = new FormData();
   data.append('episodes', JSON.stringify(oldUrl)); 
   data.append('newEpisodes', JSON.stringify(url));
   const handleType=(e)=>{settypedComment(e.target.value)};
-  const handleSubmit=()=>{dispatch(postComment({TrailerId:Id,episodes:number,Owner:user._id,text:typedComment})).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number})))}//text,episodes,Owner,TrailerId
+  const handleSubmit=()=>{dispatch(postComment({TrailerId:Id,episodes:number,Owner:user._id,text:typedComment})).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number}))&&settypedComment(""))}//text,episodes,Owner,TrailerId
   const handleCancel=()=>{settypedComment("")}
+ const handleCancelModify=()=>{setShow(!show)}
   const handleDelete=(e)=>{dispatch(deleteComment(e._id)).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number})))}
+  const handleSave=(e)=>{dispatch(modifyComment({id:e._id,text:typedNewComment})).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number}))&&setShow(!show))}
+  const handleModify=()=>{setShow(!show)}
+  const handleNewTyped=(e)=>{settypedNewComment(e.target.value)}
   useEffect(() => {
     Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
     authorized ? navigate() : navigate("/")
@@ -85,11 +91,11 @@ const Episode = () => {
                 if you can't watch the video please try to reload page
               </div>
               <section class="postingComment">
-              <Comments value={typedComment} handleCancel={handleCancel} handleSubmit={handleSubmit} handleType={handleType} url={user.Image.path}/>
+              <Comments  value={typedComment} handleCancel={handleCancel} handleSubmit={handleSubmit} handleType={handleType} url={user.Image.path}/>
               </section>
               <div class="episodeComments">
              
-              {EpComments.map(e=><PostedComments OwnerId={e.Owner._id}  handleDelete={()=>handleDelete(e)} updatedAt={e.updatedAt} owner={e.Owner.userName} text={e.text} url={e.Owner.Image.path}/>)}
+              {EpComments.length!=0? EpComments.map(e=><PostedComments handleNewTyped={handleNewTyped} handleModify={handleModify} handleCancelModify={handleCancelModify}  show={show} handleSave={()=>handleSave(e)} OwnerId={e.Owner._id}  handleDelete={()=>handleDelete(e)} updatedAt={e.updatedAt} owner={e.Owner.userName} text={e.text} url={e.Owner.Image.path}/>):<h5 style={{marginTop:"1.5cm"}}>No comment was posted yet ...</h5>}
              
           
               </div>

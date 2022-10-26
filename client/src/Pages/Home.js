@@ -79,7 +79,7 @@ const Home = () => {
 
             </div>
             <div class="newAnimes">
-              {true && trailers2?.map((e, i) => i < 9 ? <NewAnimes Rate={9 - i} animeName={e.animeName} animePicture={e?.animePicture} season={e.season} Id={e._id} /> : null)}
+              {true && trailers2?.map((e, i) => i < 9 ? <NewAnimes Rate={ i+1} animeName={e.animeName} animePicture={e?.animePicture} season={e.season} Id={e._id} /> : null)}
 
             </div>
           </div>

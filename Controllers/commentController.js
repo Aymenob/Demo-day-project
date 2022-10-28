@@ -35,7 +35,7 @@ const getComments = async function (req, res) {
 const getTrailerComments = async function (req, res) {
    try {
        const {id,number} = req.params;
-       const comments = await Comment.find({TrailerId: id}).lean().populate({path:"Owner",select:"-Password -__v"}).find({episodes:number}).sort({ likes: -1 })
+       const comments = await Comment.find({TrailerId: id}).lean().populate({path:"Owner",select:"-Password -__v"}).find({episodes:number}).sort({rate:-1 })
               return res.status(200).json(comments)
    } catch (err) { return res.status(500).json({ msg: err }) }
 }
@@ -60,7 +60,8 @@ const toggleLike=async function (req,res) {
       
       const toggle1=await Comment.findOneAndUpdate({ _id:commentId }, { $pull: { "deslikes": userId  }},{new:true,timestamps:false})
       const toggle2=await Comment.findOneAndUpdate({ _id: commentId},{$addToSet: { "likes": userId } },{new:true,timestamps:false})
-
+      //const rate=await Comment.findOneAndUpdate({ _id: commentId},{$inc : {'Comments.rate' : 2}} ,{new:true,timestamps:false})
+      //exist2.likes.length-exist2.deslikes.length+2
       return res.status(200).json(toggle2)
    }
       const exist=await Comment.findOne({ _id:commentId ,"likes": userId })
@@ -101,4 +102,15 @@ const toggleDeslike=async function (req,res) {
       return res.status(500).json({msg:err})
    }
 }
-module.exports = { postComment,deleteComment,getComments,getTrailerComments,modifyComment,toggleLike,toggleDeslike}
+//------------------------------update Rate
+const handleRate=async function (req,res) {
+   const {commentId,rate}=req.params;
+   
+   try {
+      const modifiedComment=await Comment.findByIdAndUpdate(commentId,{rate:rate},{new:true})
+      return res.status(200).json(modifiedComment)
+   } catch (err) {return res.status(500).json({mgs:err})
+      
+   }
+}
+module.exports = { postComment,deleteComment,getComments,getTrailerComments,modifyComment,toggleLike,toggleDeslike,handleRate}

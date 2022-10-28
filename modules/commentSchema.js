@@ -9,8 +9,11 @@ const Comment=mongoose.Schema({
         ref:"Users"
     },
     likes: [{ type: 'String', unique: true }],
-    deslikes: [{ type: 'String', unique: true }]
+    deslikes: [{ type: 'String', unique: true }],
+    rate:{type:Number,default:0}
+   
 }, {
     timestamps: true
   })
+  
 module.exports=mongoose.model("Commment",Comment)

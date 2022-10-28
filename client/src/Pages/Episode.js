@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { logOUT } from '../Redux/usersSlice'
 import {  getTrailers2, getEpisode, modifyEpisode, deleteEpisode,searchTrailer,random } from '../Redux/animeSlice'
-import { getTrailerComments,postComment,deleteComment,modifyComment,toggleLike,toggleDeslike } from '../Redux/commentsSlice'
+import { getTrailerComments,postComment,deleteComment,modifyComment,toggleLike,toggleDeslike,handleRate} from '../Redux/commentsSlice'
 import { useEffect } from 'react'
 import NewAnimes from '../animeComponents/newAnimes'
 import Video from '../animeComponents/video'
@@ -41,9 +41,9 @@ const Episode = () => {
   const handleDelete=(e)=>{dispatch(deleteComment(e._id)).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number})))}
   const handleSave=(e)=>{dispatch(modifyComment({id:e._id,text:typedNewComment})).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number}))&&setShow(!show))}
   const handleModify=()=>{setShow(!show)}
-  const handleNewTyped=(e)=>{settypedNewComment(e.target.value)}
-  const handleLike=(e)=>{dispatch(toggleLike({commentId:e,userId:user._id}))} 
-  const handleDeslike=(e)=>{dispatch(toggleDeslike({commentId:e,userId:user._id}))}
+  const handleNewTyped=(e)=>{settypedNewComment(e.target.value)}//result.payload.data.likes.length-result.payload.data.deslikes.length>=0?result.payload.data.likes.length-result.payload.data.deslikes.length:0
+  const handleLike=(e)=>{dispatch(toggleLike({commentId:e,userId:user._id})).then(result=>dispatch(handleRate({commentId:e,rate:result.payload.data.likes.length-result.payload.data.deslikes.length>=0?result.payload.data.likes.length-result.payload.data.deslikes.length:0})))} 
+  const handleDeslike=(e)=>{dispatch(toggleDeslike({commentId:e,userId:user._id})).then(result=>dispatch(handleRate({commentId:e,rate:result.payload.data.likes.length-result.payload.data.deslikes.length>=0?result.payload.data.likes.length-result.payload.data.deslikes.length:0})))}
   useEffect(() => {
     Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
     authorized ? navigate() : navigate("/")
@@ -54,7 +54,7 @@ const Episode = () => {
   }, [number])
   useEffect(() => {
     Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
-    }, [Id,number,Com.toggledLike,Com.toggledDeslike])
+    }, [Id,number,Com.toggledLike,Com.toggledDeslike,Com.rateUpdate])
     
   
 

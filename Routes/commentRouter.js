@@ -1,5 +1,5 @@
 const express=require("express")
-const {postComment,getComments,deleteComment,getTrailerComments,modifyComment,toggleLike,toggleDeslike}=require("../Controllers/commentController")
+const {postComment,getComments,deleteComment,getTrailerComments,modifyComment,toggleLike,toggleDeslike,handleRate}=require("../Controllers/commentController")
 const router=express.Router()
 router.post("/postComment:id",postComment)
 router.get("/getComments",getComments)
@@ -8,4 +8,5 @@ router.put("/modifyComment:id",modifyComment)
 router.delete("/deleteComment:id",deleteComment)
 router.put("/toggleLike/:commentId/:userId",toggleLike)
 router.put("/toggleDeslike/:commentId/:userId",toggleDeslike)
+router.put("/handleRate/:commentId/:rate",handleRate)
 module.exports=router

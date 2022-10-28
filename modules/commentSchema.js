@@ -7,7 +7,9 @@ const Comment=mongoose.Schema({
     Owner:{
         type:mongoose.Types.ObjectId,
         ref:"Users"
-    }
+    },
+    likes: [{ type: 'String', unique: true }],
+    deslikes: [{ type: 'String', unique: true }]
 }, {
     timestamps: true
   })

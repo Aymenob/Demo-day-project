@@ -1,9 +1,11 @@
 const express=require("express")
-const {postComment,getComments,deleteComment,getTrailerComments,modifyComment}=require("../Controllers/commentController")
+const {postComment,getComments,deleteComment,getTrailerComments,modifyComment,toggleLike,toggleDeslike}=require("../Controllers/commentController")
 const router=express.Router()
 router.post("/postComment:id",postComment)
 router.get("/getComments",getComments)
 router.get("/getTrailerComments/:id/:number",getTrailerComments)
 router.put("/modifyComment:id",modifyComment)
 router.delete("/deleteComment:id",deleteComment)
+router.put("/toggleLike/:commentId/:userId",toggleLike)
+router.put("/toggleDeslike/:commentId/:userId",toggleDeslike)
 module.exports=router

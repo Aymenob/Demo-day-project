@@ -27,6 +27,24 @@ export const modifyComment=createAsyncThunk("comments/modifyComment",async funct
     return data
   } catch (err) {return rejectWithValue(err.response.data.msg) }
 })
+export const toggleLike=createAsyncThunk("comments/toggleLike",async function (Info,{rejectWithValue}) {
+  
+  try {
+     const result=axios.put("/toggleLike/"+Info.commentId+"/"+Info.userId)
+     return result
+  } catch (err) {
+    return rejectWithValue(err.response.data.msg)
+  }
+})
+export const toggleDeslike=createAsyncThunk("comments/toggleDeslike",async function (Info,{rejectWithValue}) {
+  console.log(Info)
+  try {
+     const result=axios.put("/toggleDeslike/"+Info.commentId+"/"+Info.userId)
+     return result
+  } catch (err) {
+    return rejectWithValue(err.response.data.msg)
+  }
+})
 const initialState={
  loading:true,
   errors:null,
@@ -34,7 +52,9 @@ const initialState={
   Comments:[],
   newComment:null,
   deletedComment:null,
-  modifiedComment:null
+  modifiedComment:null,
+  toggledLike:null,
+  toggledDeslike:null
   }
 
   export const commentSlice = createSlice({
@@ -86,7 +106,29 @@ const initialState={
    state.errors=payload
    state.loading=false
    
- }
+ },
+ [toggleLike.pending]:(state)=>{ state.loading=true},
+ [toggleLike.fulfilled]:(state,{payload})=>{
+  state.toggledLike=payload.data
+  state.loading=false
+  
+},
+ [toggleLike.rejected]:(state,{payload})=>{
+  state.errors=payload
+  state.loading=false
+  
+},
+[toggleDeslike.pending]:(state)=>{ state.loading=true},
+[toggleDeslike.fulfilled]:(state,{payload})=>{
+ state.toggledDeslike=payload.data
+ state.loading=false
+ 
+},
+[toggleDeslike.rejected]:(state,{payload})=>{
+ state.errors=payload
+ state.loading=false
+ 
+}
   }
 })
 

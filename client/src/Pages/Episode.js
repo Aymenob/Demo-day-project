@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { logOUT } from '../Redux/usersSlice'
 import {  getTrailers2, getEpisode, modifyEpisode, deleteEpisode,searchTrailer,random } from '../Redux/animeSlice'
-import { getTrailerComments,postComment,deleteComment,modifyComment } from '../Redux/commentsSlice'
+import { getTrailerComments,postComment,deleteComment,modifyComment,toggleLike,toggleDeslike } from '../Redux/commentsSlice'
 import { useEffect } from 'react'
 import NewAnimes from '../animeComponents/newAnimes'
 import Video from '../animeComponents/video'
@@ -23,6 +23,7 @@ const Episode = () => {
   const Episodes = useSelector(state => state.animes?.clickedEpisode?.episodes)
   const Id = useSelector(state => state.animes?.clickedEpisode?._id);
   const EpComments=useSelector(state=>state.Comments.Comments)
+  const Com=useSelector(state=>state.Comments);
    const dispatch = useDispatch()
   const navigate = useNavigate()
   const [oldUrl, setOldUrl] = useState({ number: number }); 
@@ -41,6 +42,8 @@ const Episode = () => {
   const handleSave=(e)=>{dispatch(modifyComment({id:e._id,text:typedNewComment})).then(result=>dispatch(getTrailerComments({TrailerId:Id,number:number}))&&setShow(!show))}
   const handleModify=()=>{setShow(!show)}
   const handleNewTyped=(e)=>{settypedNewComment(e.target.value)}
+  const handleLike=(e)=>{dispatch(toggleLike({commentId:e,userId:user._id}))} 
+  const handleDeslike=(e)=>{dispatch(toggleDeslike({commentId:e,userId:user._id}))}
   useEffect(() => {
     Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
     authorized ? navigate() : navigate("/")
@@ -51,7 +54,8 @@ const Episode = () => {
   }, [number])
   useEffect(() => {
     Id?dispatch(getTrailerComments({TrailerId:Id,number:number})):console.log("comments loading...")
-    }, [Id,number])
+    }, [Id,number,Com.toggledLike,Com.toggledDeslike])
+    
   
 
   return (
@@ -95,7 +99,7 @@ const Episode = () => {
               </section>
               <div class="episodeComments">
              
-              {EpComments.length!=0? EpComments.map(e=><PostedComments handleNewTyped={handleNewTyped} handleModify={handleModify} handleCancelModify={handleCancelModify}  show={show} handleSave={()=>handleSave(e)} OwnerId={e.Owner._id}  handleDelete={()=>handleDelete(e)} updatedAt={e.updatedAt} owner={e.Owner.userName} text={e.text} url={e.Owner.Image.path}/>):<h5 style={{marginTop:"1.5cm"}}>No comment was posted yet ...</h5>}
+              {EpComments.length!=0? EpComments.map(e=><PostedComments toggleDeslike={e.deslikes} toggleLike={e.likes} handleDeslike={()=>handleDeslike(e._id)} handleLike={()=>handleLike(e._id)} handleNewTyped={handleNewTyped} handleModify={handleModify} handleCancelModify={handleCancelModify}  show={show} handleSave={()=>handleSave(e)} OwnerId={e.Owner._id}  handleDelete={()=>handleDelete(e)} updatedAt={e.updatedAt} owner={e.Owner.userName} text={e.text} url={e.Owner.Image.path}/>):<h5 style={{marginTop:"1.5cm"}}>No comment was posted yet ...</h5>}
              
           
               </div>

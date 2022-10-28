@@ -35,7 +35,7 @@ const getComments = async function (req, res) {
 const getTrailerComments = async function (req, res) {
    try {
        const {id,number} = req.params;
-       const comments = await Comment.find({TrailerId: id}).lean().populate({path:"Owner",select:"-Password -__v"}).find({episodes:number})
+       const comments = await Comment.find({TrailerId: id}).lean().populate({path:"Owner",select:"-Password -__v"}).find({episodes:number}).sort({ likes: -1 })
               return res.status(200).json(comments)
    } catch (err) { return res.status(500).json({ msg: err }) }
 }
@@ -50,5 +50,55 @@ const modifyComment=async function (req,res) {
       
    }
 }
+//------------------------------toggle Likes
+const toggleLike=async function (req,res) {
+   const {commentId,userId}=req.params
+   
+  try {
+   const exist2=await Comment.findOne({ _id:commentId ,"deslikes": userId })
+   if(exist2){
+      
+      const toggle1=await Comment.findOneAndUpdate({ _id:commentId }, { $pull: { "deslikes": userId  }},{new:true,timestamps:false})
+      const toggle2=await Comment.findOneAndUpdate({ _id: commentId},{$addToSet: { "likes": userId } },{new:true,timestamps:false})
 
-module.exports = { postComment,deleteComment,getComments,getTrailerComments,modifyComment }
+      return res.status(200).json(toggle2)
+   }
+      const exist=await Comment.findOne({ _id:commentId ,"likes": userId })
+      if(exist){
+         
+         const toggle1=await Comment.findOneAndUpdate({ _id:commentId }, { $pull: { "likes": userId  } },{new:true,timestamps:false})
+         return res.status(200).json(toggle1)
+      }
+      const toggle=await Comment.findOneAndUpdate({ _id: commentId},{$addToSet: { "likes": userId } },{new:true,timestamps:false})
+     
+      return res.status(200).json(toggle)
+   } catch (err) {
+      return res.status(500).json({mgs:err})
+   }
+}
+//------------------------------toggle desLikes
+const toggleDeslike=async function (req,res) {
+  const {commentId,userId}=req.params
+   try {
+      const exist2=await Comment.findOne({ _id:commentId ,"likes": userId })
+      if(exist2){
+      
+         const toggle1=await Comment.findOneAndUpdate({ _id:commentId }, { $pull: { "likes": userId  } },{new:true,timestamps:false})
+         const toggle2=await Comment.findOneAndUpdate({ _id: commentId},{$addToSet: { "deslikes": userId }},{new:true,timestamps:false})
+
+         return res.status(200).json(toggle2)
+      }
+      const exist=await Comment.findOne({ _id:commentId ,"deslikes": userId })
+      if(exist){
+         
+         const toggle=await Comment.findOneAndUpdate({ _id:commentId }, { $pull: { "deslikes": userId  }},{new:true,timestamps:false})
+         return res.status(200).json(toggle)
+      }
+      const toggle=await Comment.findOneAndUpdate({ _id: commentId},{$addToSet: { "deslikes": userId }},{new:true,timestamps:false})
+     
+      return res.status(200).json(toggle)
+   } catch (err) {
+      return res.status(500).json({msg:err})
+   }
+}
+module.exports = { postComment,deleteComment,getComments,getTrailerComments,modifyComment,toggleLike,toggleDeslike}
